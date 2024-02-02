@@ -1,4 +1,6 @@
 using Desenvolve.Contexts;
+using Desenvolve.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
