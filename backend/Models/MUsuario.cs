@@ -17,6 +17,7 @@ public class MUsuario
 
 	// Email possuí unique constraint
 	[MaxLength(256)]
+	[EmailAddress(ErrorMessage = "O endereço de e-mail deve ser válido.")]
 	public string Email {get; set;}
 
 	[Column]

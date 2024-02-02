@@ -1,8 +1,10 @@
 namespace Desenvolve.Models;
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 public class MEquipe
 {
@@ -27,6 +29,8 @@ public class MEquipe
 	}
 
 	[NotMapped]
+	// Método de validação a partir da linha 57
+	[ValidacaoUnicoLiderEquipe(ErrorMessage = "É permito apenas um líder por equipe.")]
 	public MUsuario? Lider
 	{
 		get { return UsuarioEquipes.FirstOrDefault(usuarioEquipe => usuarioEquipe.Lider)?.Usuario; }
@@ -47,5 +51,26 @@ public class MEquipe
 		this.UsuarioEquipes = new HashSet<MUsuarioEquipe>();
 		this.Projetos = new HashSet<MProjeto>();
 	}
+}
 
+// Verifica a quantidade de líderes em uma equipe
+[AttributeUsage(AttributeTargets.Property)]
+public class ValidacaoUnicoLiderEquipe : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+		var equipe = (MEquipe)validationContext.ObjectInstance;
+
+		if(equipe != null)
+		{
+			var ContadorLider = equipe.UsuarioEquipes.Count(usuarioEquipe => usuarioEquipe.Lider);
+
+			if (ContadorLider > 1)
+			{
+				return new ValidationResult(ErrorMessage);
+			}
+		}
+
+        return ValidationResult.Success;
+    }
 }
