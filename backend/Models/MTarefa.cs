@@ -48,8 +48,8 @@ public class MTarefa
 		this.Nome = nome;
         this.Descricao = descricao;
 		this.Complexidade = complexidade;
-		this.Projeto = new MProjeto();
-		this.Responsavel = new MUsuario();
+		this.Projeto = projeto;
+		this.Responsavel = responsavel;
 		this.Prazo = prazo;
 	}
 }
