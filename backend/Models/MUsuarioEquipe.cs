@@ -8,6 +8,13 @@ using Microsoft.EntityFrameworkCore;
 [PrimaryKey(nameof(CodigoUsuario), nameof(CodigoEquipe))]
 public class MUsuarioEquipe
 {
+	public enum TipoCargo
+	{
+		Membro,
+		Administrador,
+		Lider
+	}
+
 	[Column]
 	private int CodigoUsuario {get; set;}
 
@@ -20,21 +27,18 @@ public class MUsuarioEquipe
 	[ForeignKey("CodigoEquipe")]
 	public MEquipe Equipe {get; set;}
 
-	public bool Lider {get; set;}
+	public TipoCargo Cargo {get; set;}
 
-	public bool Admin {get; set;}
-	
 	public MUsuarioEquipe()
 	{
 		this.Usuario = new MUsuario();
 		this.Equipe = new MEquipe();
 	}
 
-	public MUsuarioEquipe(MUsuario usuario, MEquipe equipe, bool lider = false, bool admin = false)
+	public MUsuarioEquipe(MUsuario usuario, MEquipe equipe, TipoCargo cargo)
 	{
 		this.Usuario = usuario;
 		this.Equipe = equipe;
-		this.Lider = lider;
-		this.Admin = admin;
+		this.Cargo = cargo;
 	}
 }

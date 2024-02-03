@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-public class MEquipe
+public class MEquipe : IValidatableObject
 {
 	[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int Codigo {get; set;}
 
+	[MinLength(2, ErrorMessage = "O nome deve possuir no mínimo 2 caracteres")]
 	[MaxLength(64)]
 	public string Nome {get; set;}
 
@@ -23,15 +24,17 @@ public class MEquipe
 	[NotMapped]
 	public IEnumerable<MUsuario> Administradores
 	{
-		get { return UsuarioEquipes.Where(usuarioEquipe => usuarioEquipe.Admin).Select(usuarioEquipe => usuarioEquipe.Usuario); }
+		get
+		{
+			return UsuarioEquipes.Where(usuarioEquipe => 
+				usuarioEquipe.Cargo >= MUsuarioEquipe.TipoCargo.Administrador).Select(usuarioEquipe => usuarioEquipe.Usuario);
+		}
 	}
 
 	[NotMapped]
-	// Método de validação a partir da linha 57
-	[ValidacaoUnicoLiderEquipe(ErrorMessage = "É permito apenas um líder por equipe.")]
-	public MUsuario? Lider
+	public MUsuario Lider
 	{
-		get { return UsuarioEquipes.FirstOrDefault(usuarioEquipe => usuarioEquipe.Lider)?.Usuario; }
+		get { return UsuarioEquipes.First(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider).Usuario; }
 	}
 
 	public ISet<MProjeto> Projetos {get; set;}
@@ -49,26 +52,60 @@ public class MEquipe
 		this.UsuarioEquipes = new HashSet<MUsuarioEquipe>();
 		this.Projetos = new HashSet<MProjeto>();
 	}
-}
 
-// Verifica a quantidade de líderes em uma equipe
-[AttributeUsage(AttributeTargets.Property)]
-public class ValidacaoUnicoLiderEquipe : ValidationAttribute
-{
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-    {
-		var equipe = (MEquipe)validationContext.ObjectInstance;
+	public void AdicionarMembro(MUsuario usuario, MUsuarioEquipe.TipoCargo cargo)
+	{
+		if (cargo == MUsuarioEquipe.TipoCargo.Lider && UsuarioEquipes.Any(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider))
+			throw new ArgumentException("A equipe já possui um líder");
 
-		if(equipe != null)
+		if (Membros.Contains(usuario))
+			throw new ArgumentException("O usuário já é membro da equipe");
+
+		UsuarioEquipes.Add(new MUsuarioEquipe(usuario, this, cargo));
+	}
+
+	public void RemoverMembro(MUsuario usuario)
+	{
+		MUsuarioEquipe? usuarioEquipe = UsuarioEquipes.FirstOrDefault(usuarioEquipe => usuarioEquipe.Usuario == usuario);
+
+		if (usuarioEquipe == null)
+			throw new ArgumentException("O usuário não é membro da equipe");
+
+		if (usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider)
+			throw new ArgumentException("Não é possível remover o líder da equipe");
+
+		UsuarioEquipes.Remove(usuarioEquipe);
+	}
+
+	// Este método é capaz de alterar o líder da equipe
+	public void AlterarCargo(MUsuario usuario, MUsuarioEquipe.TipoCargo cargo)
+	{
+		MUsuarioEquipe? usuarioEquipe = UsuarioEquipes.FirstOrDefault(usuarioEquipe => usuarioEquipe.Usuario == usuario);
+
+		if (usuarioEquipe == null || usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider)
+			throw new ArgumentException("Não é possível alterar o cargo do líder da equipe");
+
+		// Para tornar alguém líder, é necessário remover o cargo de líder do líder atual
+		if (cargo == MUsuarioEquipe.TipoCargo.Lider)
 		{
-			var ContadorLider = equipe.UsuarioEquipes.Count(usuarioEquipe => usuarioEquipe.Lider);
-
-			if (ContadorLider > 1)
-			{
-				return new ValidationResult(ErrorMessage);
-			}
+			MUsuarioEquipe liderAtual = UsuarioEquipes.First(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider);
+			liderAtual.Cargo = MUsuarioEquipe.TipoCargo.Administrador;
 		}
 
-        return ValidationResult.Success;
-    }
+		usuarioEquipe.Cargo = cargo;
+	}
+
+	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+	{
+		List<ValidationResult> errosValidacao = new List<ValidationResult>();
+
+		Validator.TryValidateProperty(this.Nome, new ValidationContext(this, null, null) { MemberName = "Nome" }, errosValidacao);
+
+		int quantidadeLideres = UsuarioEquipes.Where(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider).Count();
+	
+		if (quantidadeLideres != 1)
+			errosValidacao.Add(new ValidationResult("A equipe deve possuir exatamente um líder", ["UsuarioEquipes"]));
+
+		return errosValidacao;
+	}
 }

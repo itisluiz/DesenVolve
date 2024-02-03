@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Desenvolve.Contexts;
 using Desenvolve.Models;
 using Microsoft.EntityFrameworkCore;
