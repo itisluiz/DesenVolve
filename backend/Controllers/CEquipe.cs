@@ -1,5 +1,3 @@
-
-
 using System.Security.Claims;
 using Desenvolve.Contexts;
 using Desenvolve.Models;
