@@ -81,6 +81,7 @@ public class CEquipe : Controller
         
     }
 
+    // Aguardar CProjeto e CEquipe para concluir esse método
     [Authorize]
     [HttpDelete("exclusao")]
     public IActionResult DeletarEquipe([FromForm] int codigoEquipe)
