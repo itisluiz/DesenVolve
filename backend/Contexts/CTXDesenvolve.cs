@@ -34,7 +34,7 @@ public class CTXDesenvolve : DbContext
 	// A ideia é colocar o autoinclude somente para entidades de "relacionamento" ou majoritariamente "fracas"
 	protected void OnModelCreating(EntityTypeBuilder<MUsuarioEquipe> usuarioEquipeBuilder)
 	{
-		usuarioEquipeBuilder.Navigation(usuarioEquipe=> usuarioEquipe.Equipe).AutoInclude();
+		usuarioEquipeBuilder.Navigation(usuarioEquipe => usuarioEquipe.Equipe).AutoInclude();
 		usuarioEquipeBuilder.Navigation(usuarioEquipe => usuarioEquipe.Usuario).AutoInclude();
 	}
 

@@ -1,7 +1,6 @@
 namespace Desenvolve.Filters;
 
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
@@ -24,7 +23,6 @@ public class FLTExcecao : IExceptionFilter
 	public void OnException(ExceptionContext contexto)
 	{
 		// TODO: LOG ERROS
-
 		Exception excecao = contexto.Exception;
 
 		switch (excecao)
@@ -33,6 +31,12 @@ public class FLTExcecao : IExceptionFilter
 			case ValidationException:
 			{
 				contexto.Result = ResultadoErroJson("valorinvalido", excecao.Message, 400);
+				contexto.ExceptionHandled = true;
+				break;
+			}
+			case UnauthorizedAccessException:
+			{
+				contexto.Result = ResultadoErroJson("acessonegado", excecao.Message, 401);
 				contexto.ExceptionHandled = true;
 				break;
 			}
