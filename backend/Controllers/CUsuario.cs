@@ -51,4 +51,29 @@ public class CUsuario : Controller
 		return Ok();
 	}
 
+	[HttpPatch("atualizacao")]
+	public IActionResult AtualizarUsuario([FromQuery] int codigoUsuario, [FromForm] string? nome, 
+	[FromForm] string? sobrenome, [FromForm] string? email, [FromForm] string? senha)
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MUsuario? usuario = ctx.Usuarios.Find(codigoUsuario);
+		if (usuario == null)
+			return NotFound($"Usuário de código {codigoUsuario} não encontrado!");
+
+		if (nome != null)
+			usuario.Nome = nome;
+
+		if (sobrenome != null)
+			usuario.Sobrenome = sobrenome;
+		
+		if (email != null)
+			usuario.Email = email;
+		
+		if (senha != null)
+			usuario.Senha = senha;
+		
+		ctx.SaveChanges();
+		return Ok();
+	}
 }
