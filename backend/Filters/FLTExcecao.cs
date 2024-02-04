@@ -1,6 +1,7 @@
 namespace Desenvolve.Filters;
 
 using System.ComponentModel.DataAnnotations;
+using Desenvolve.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
@@ -63,7 +64,8 @@ public class FLTExcecao : IExceptionFilter
 
 		if (!contexto.ExceptionHandled)
 		{
-			contexto.Result = ResultadoErroJson("errointerno", "Ocorreu um erro interno no servidor", 500);
+			int codigoErro = Logger.LogarExcecao(contexto.Exception);
+			contexto.Result = ResultadoErroJson("errointerno", $"Ocorreu um erro interno no servidor (Código de referência: {codigoErro})", 500);
 			contexto.ExceptionHandled = true;
 		}
 	}

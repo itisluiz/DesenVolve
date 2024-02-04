@@ -2,6 +2,7 @@ namespace Desenvolve.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 public class MEquipe : IValidatableObject
@@ -13,6 +14,7 @@ public class MEquipe : IValidatableObject
 	[MaxLength(64)]
 	public string Nome {get; set;}
 
+	[JsonIgnore]
 	public ISet<MUsuarioEquipe> UsuarioEquipes {get; set;}
 
 	[NotMapped]
@@ -37,6 +39,7 @@ public class MEquipe : IValidatableObject
 		get { return UsuarioEquipes.First(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider).Usuario; }
 	}
 
+	[JsonIgnore]
 	public ISet<MProjeto> Projetos {get; set;}
 
 	public MEquipe()

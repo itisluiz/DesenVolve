@@ -2,6 +2,7 @@ namespace Desenvolve.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 public class MUsuario : IValidatableObject
@@ -34,9 +35,11 @@ public class MUsuario : IValidatableObject
 	[NotMapped]
 	public string Senha { set { SenhaHash = HashSenha(value); } }
 
+	[JsonIgnore]
 	public ISet<MUsuarioEquipe> UsuarioEquipes {get; set;}
 
 	[NotMapped]
+	[JsonIgnore]
 	public IEnumerable<MEquipe> Equipes { get { return UsuarioEquipes.Select(usuarioEquipe => usuarioEquipe.Equipe); } }
 
 	public MUsuario()
