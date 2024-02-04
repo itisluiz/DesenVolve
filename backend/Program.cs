@@ -1,6 +1,7 @@
 using System.Text;
 using Desenvolve.Contexts;
 using Desenvolve.Util;
+using Desenvolve.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,6 +11,12 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<CTXDesenvolve>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMvc(options =>
+{
+	options.Filters.Add<FLTExcecao>();
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
