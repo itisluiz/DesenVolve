@@ -1,6 +1,7 @@
 namespace Desenvolve.Filters;
 
 using System.ComponentModel.DataAnnotations;
+using Desenvolve.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
@@ -50,7 +51,7 @@ public class FLTExcecao : IExceptionFilter
 						case 2627: // Erro UNIQUE constriant (PK ou UNIQUE)
 						{
 							contexto.Result = ResultadoErroJson("valorduplicado", "Um ou mais valores já existem na base de dados e não podem ser duplicados", 400);
-							contexto.ExceptionHandled = false;
+							contexto.ExceptionHandled = true;
 							break;
 						}
 					}
@@ -62,7 +63,7 @@ public class FLTExcecao : IExceptionFilter
 
 		if (!contexto.ExceptionHandled)
 		{
-			// TODO: LOG ERROS
+			LogHelper.LogExcecao(excecao);
 			contexto.Result = ResultadoErroJson("errointerno", "Ocorreu um erro interno no servidor", 500);
 			contexto.ExceptionHandled = true;
 		}
