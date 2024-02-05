@@ -30,7 +30,6 @@ public class CUsuario : Controller
 		return Ok(usuario);
 	}
 
-	// Erro nesse método: não está sendo possível modificar o email do usuário
 	[Authorize]
 	[HttpPatch]
 	public IActionResult AtualizarUsuario([FromForm] string? nome, 
