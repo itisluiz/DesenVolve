@@ -31,6 +31,17 @@ public class CUsuario : Controller
 		return Ok(usuario);
 	}
 
+	[HttpPut]
+	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, 
+		[FromForm] string email, [FromForm] string senha)
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+		ctx.Usuarios.Add(new MUsuario(nome, sobrenome, email, senha));
+		ctx.SaveChanges();
+
+		return LoginUsuario(email, senha);
+	}
+
 	[Authorize]
 	[HttpPatch]
 	public IActionResult AtualizarUsuario([FromForm] string? nome, 
@@ -54,18 +65,7 @@ public class CUsuario : Controller
 		return Ok();
 	}
 
-	[HttpPost("cadastro")]
-	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, 
-		[FromForm] string email, [FromForm] string senha)
-	{
-		using CTXDesenvolve ctx = new CTXDesenvolve();
-		ctx.Usuarios.Add(new MUsuario(nome, sobrenome, email, senha));
-		ctx.SaveChanges();
-
-		return LoginUsuario(email, senha);
-	}
-
-	[HttpPost("login")]
+	[HttpPost("/api/login")]
 	public IActionResult LoginUsuario([FromForm] string email, [FromForm] string senha)
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
@@ -83,12 +83,12 @@ public class CUsuario : Controller
 			new Claim(ClaimTypes.Surname, usuario.Sobrenome)
 		];
 
-		string token = TokenHelper.GerarJWT(claims, DateTime.Now.AddDays(1));
+		string token = TokenHelper.GerarJWT(claims, DateTime.Now.AddDays(7));
 		Response.Cookies.Append("token", token);
 		return Ok();
 	}
 
-	[HttpPost("logout")]
+	[HttpPost("/api/logout")]
 	public IActionResult LogoutUsuario()
 	{
 		Response.Cookies.Delete("token");

@@ -19,6 +19,7 @@ public class MEquipe : IValidatableObject
 	public ISet<MUsuarioEquipe> UsuarioEquipes {get; set;}
 	
 	[NotMapped]
+	[JsonIgnore]
 	public IEnumerable<MUsuario> Membros
 	{
 		get { return UsuarioEquipes.Select(usuarioEquipe => usuarioEquipe.Usuario); }
@@ -83,7 +84,6 @@ public class MEquipe : IValidatableObject
 		UsuarioEquipes.Remove(usuarioEquipe);
 	}
 
-	// Este método é capaz de alterar o líder da equipe
 	public void AlterarCargo(MUsuario usuario, MUsuarioEquipe.TipoCargo cargo)
 	{
 		MUsuarioEquipe? usuarioEquipe = UsuarioEquipes.FirstOrDefault(usuarioEquipe => usuarioEquipe.Usuario == usuario);
