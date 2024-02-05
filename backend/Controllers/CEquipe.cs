@@ -73,7 +73,7 @@ public class CEquipe : Controller
         }
         else
         {
-            throw new ArgumentException("Usuário sem permissão para atualizar esta equipe");
+            throw new UnauthorizedAccessException("Usuário sem permissão para atualizar esta equipe");
         }
         
     }
