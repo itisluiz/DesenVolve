@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+// TODO: Métodos de API para gerir membros
+
 [Route("api/equipe")]
 public class CEquipe : Controller
 {
@@ -17,52 +19,31 @@ public class CEquipe : Controller
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = Identity.ObterUsuarioLogado(ctx, User);
-		if (usuario == null)
-			throw new ArgumentException("Código de usuário logado inválido");
-
-		if (!equipe.Membros.Contains(usuario))
-			throw new ArgumentException("Usuário não é um membro desta equipe");
+		Login login = new Login(User);
+		if (!equipe.Membros.Any(login.RepresentaUsuario))
+			throw new UnauthorizedAccessException("Usuário não é um membro desta equipe");
 
 		return Ok(equipe);
 	}
 
+	
 	[Authorize]
-	[HttpPost("cadastro")]
-	public IActionResult CadastrarEquipe([FromForm] string nome)
-	{
-		using CTXDesenvolve ctx = new CTXDesenvolve();
-
-		MUsuario? lider = Identity.ObterUsuarioLogado(ctx, User);
-		if (lider == null)
-			throw new ArgumentException("Código de usuário líder não encontrado");
-
-		MEquipe novaEquipe = ctx.Equipes.Add(new MEquipe(nome)).Entity;
-
-		novaEquipe.AdicionarMembro(lider, MUsuarioEquipe.TipoCargo.Lider);
-
-		ctx.SaveChanges();
-		return Ok(novaEquipe);
-	}
-
-	[Authorize]
-	[HttpPatch("atualizacao")]
+	[HttpPatch]
 	public IActionResult AtualizarEquipe([FromForm] int codigoEquipe, [FromForm] string? nome)
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = Identity.ObterUsuarioLogado(ctx, User);
-		if (usuario == null)
-			throw new ArgumentException("Código de usuário não encontrado");
-
-		if (equipe.Lider.Codigo == usuario.Codigo || equipe.Administradores.Any(admin => admin.Codigo == usuario.Codigo))
+		Login login = new Login(User);
+		if (equipe.UsuarioEquipes.Any())
 		{
 			if (nome != null)
 				equipe.Nome = nome;
@@ -74,6 +55,22 @@ public class CEquipe : Controller
 		{
 			throw new ArgumentException("Usuário sem permissão para atualizar esta equipe");
 		}
+	}
+
+	[Authorize]
+	[HttpPost("cadastro")]
+	public IActionResult CadastrarEquipe([FromForm] string nome)
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		Login login = new Login(User);
+		MUsuario criador = login.ObterUsuario(ctx);
+
+		MEquipe novaEquipe = ctx.Equipes.Add(new MEquipe(nome)).Entity;
+		novaEquipe.AdicionarMembro(criador, MUsuarioEquipe.TipoCargo.Lider);
+
+		ctx.SaveChanges();
+		return Ok(novaEquipe);
 	}
 
 	// Aguardar CProjeto e CEquipe para concluir esse método

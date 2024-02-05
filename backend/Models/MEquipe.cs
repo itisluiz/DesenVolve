@@ -3,7 +3,8 @@ namespace Desenvolve.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
+
+// TODO: Resposta json pertinente com os cargos junto dos membros (JsonObject?)
 
 public class MEquipe : IValidatableObject
 {
@@ -16,7 +17,7 @@ public class MEquipe : IValidatableObject
 
 	[JsonIgnore]
 	public ISet<MUsuarioEquipe> UsuarioEquipes {get; set;}
-
+	
 	[NotMapped]
 	public IEnumerable<MUsuario> Membros
 	{
@@ -24,6 +25,7 @@ public class MEquipe : IValidatableObject
 	}
 
 	[NotMapped]
+	[JsonIgnore]
 	public IEnumerable<MUsuario> Administradores
 	{
 		get
@@ -34,6 +36,7 @@ public class MEquipe : IValidatableObject
 	}
 
 	[NotMapped]
+	[JsonIgnore]
 	public MUsuario Lider
 	{
 		get { return UsuarioEquipes.First(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider).Usuario; }

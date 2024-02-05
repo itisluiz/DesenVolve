@@ -17,10 +17,11 @@ public class CUsuario : Controller
 
 		if (codigoUsuario == null)
 		{
-			if (int.TryParse(User.FindFirstValue("Codigo"), out int codigoLogado))
-				codigoUsuario = codigoLogado;
-			else
+			if (!Login.Logado(User))
 				throw new ArgumentException("Código de usuário não fornecido e não está logado");
+			
+			Login login = new Login(User);
+			return Ok(login.ObterUsuario(ctx));
 		}
 
 		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoUsuario);		
@@ -37,9 +38,8 @@ public class CUsuario : Controller
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		MUsuario? usuario = ctx.Usuarios.Find(User.FindFirstValue("Codigo"));
-		if (usuario == null)
-			throw new ArgumentException("Código de usuário logado inválido");
+		Login login = new Login(User);
+		MUsuario usuario = login.ObterUsuario(ctx);
 
 		if (nome != null)
 			usuario.Nome = nome;
@@ -58,13 +58,12 @@ public class CUsuario : Controller
 	}
 
 	[HttpPost("cadastro")]
-	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, [FromForm] string email, [FromForm] string senha)
+	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, 
+		[FromForm] string email, [FromForm] string senha)
 	{
-		using (CTXDesenvolve ctx = new CTXDesenvolve())
-		{
-			ctx.Usuarios.Add(new MUsuario(nome, sobrenome, email, senha));
-			ctx.SaveChanges();
-		}
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+		ctx.Usuarios.Add(new MUsuario(nome, sobrenome, email, senha));
+		ctx.SaveChanges();
 
 		return LoginUsuario(email, senha);
 	}

@@ -1,7 +1,7 @@
+namespace Desenvolve.Util;
+
 using Desenvolve.Contexts;
 using Desenvolve.Models;
-
-namespace Desenvolve.Util;
 
 public static class LogHelper
 {
