@@ -30,6 +30,7 @@ public class CUsuario : Controller
 		return Ok(usuario);
 	}
 
+	// Erro nesse método: não está sendo possível modificar o email do usuário
 	[Authorize]
 	[HttpPatch]
 	public IActionResult AtualizarUsuario([FromForm] string? nome, 
@@ -37,7 +38,7 @@ public class CUsuario : Controller
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		MUsuario? usuario = ctx.Usuarios.Find(User.FindFirstValue("Codigo"));
+		MUsuario? usuario = Identity.ObterUsuarioLogado(ctx, User);
 		if (usuario == null)
 			throw new ArgumentException("Código de usuário logado inválido");
 

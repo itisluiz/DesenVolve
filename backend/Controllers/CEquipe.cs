@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Desenvolve.Contexts;
 using Desenvolve.Models;
 using Desenvolve.Util;
@@ -27,7 +26,7 @@ public class CEquipe : Controller
             throw new ArgumentException("Código de usuário logado inválido");
 
         if (!equipe.Membros.Contains(usuario))
-            throw new ArgumentException("Usuário não é um membro desta equipe");
+            throw new UnauthorizedAccessException("Usuário não é um membro desta equipe");
 
         return Ok(equipe);
     }
