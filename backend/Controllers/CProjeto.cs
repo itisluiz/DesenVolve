@@ -22,14 +22,8 @@ public class CProjeto : Controller
             throw new ArgumentException("Código de projeto não encontrado");
 
         MUsuario? usuario = Identity.ObterUsuarioLogado(ctx, User); //mudar forma de pegar usuário aqui
-        if (usuario == null)
-            throw new ArgumentException("Código de usuário logado inválido");
-
-        MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Projetos.Contains(projeto));
-        if (equipe == null || !equipe.Membros.Contains(usuario))
-        {
-            throw new UnauthorizedAccessException("Usuário não é membro da equipe e não pode acessar esse projeto");
-        }
+        if (usuario == null || (!projeto.Equipe.Membros.Any(membro => membro.Codigo == usuario.Codigo)))
+            throw new UnauthorizedAccessException("Usuário sem permissão para acessar esta tarefa");
 
         return Ok(projeto);
     }
