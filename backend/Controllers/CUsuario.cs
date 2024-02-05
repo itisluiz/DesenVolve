@@ -31,7 +31,7 @@ public class CUsuario : Controller
 		return Ok(usuario);
 	}
 
-	[HttpPut]
+	[HttpPost]
 	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, 
 		[FromForm] string email, [FromForm] string senha)
 	{

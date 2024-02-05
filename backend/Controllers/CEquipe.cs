@@ -29,7 +29,7 @@ public class CEquipe : Controller
 	}
 
 	[Authorize]
-	[HttpPut]
+	[HttpPost]
 	public IActionResult CadastrarEquipe([FromForm] string nome)
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
@@ -79,7 +79,7 @@ public class CEquipe : Controller
 
 #region Membros
 	[Authorize]
-	[HttpPut("membro")]
+	[HttpPost("membro")]
 	public IActionResult AdicionarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] int codigoCargo)
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
@@ -89,7 +89,7 @@ public class CEquipe : Controller
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoUsuario);
+		MUsuario? usuario = ctx.Usuarios.Find(codigoUsuario);
 
 		if (usuario == null)
 			throw new ArgumentException("Código de usuário não encontrado");
@@ -116,7 +116,7 @@ public class CEquipe : Controller
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoUsuario);
+		MUsuario? usuario = ctx.Usuarios.Find(codigoUsuario);
 
 		if (usuario == null)
 			throw new ArgumentException("Código de usuário não encontrado");
@@ -144,7 +144,7 @@ public class CEquipe : Controller
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoUsuario);
+		MUsuario? usuario = ctx.Usuarios.Find(codigoUsuario);
 
 		if (usuario == null)
 			throw new ArgumentException("Código de usuário não encontrado");
