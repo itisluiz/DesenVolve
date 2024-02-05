@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class CTXDesenvolve : DbContext
 {
+	public DbSet<MLog> Logs { get; set; } = null!;
 	public DbSet<MUsuario> Usuarios { get; set; } = null!;
 	public DbSet<MEquipe> Equipes { get; set; } = null!;
 	public DbSet<MUsuarioEquipe> UsuarioEquipes { get; set; } = null!;

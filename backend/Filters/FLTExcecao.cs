@@ -22,7 +22,6 @@ public class FLTExcecao : IExceptionFilter
 
 	public void OnException(ExceptionContext contexto)
 	{
-		// TODO: LOG ERROS
 		Exception excecao = contexto.Exception;
 
 		switch (excecao)
@@ -51,7 +50,7 @@ public class FLTExcecao : IExceptionFilter
 						case 2627: // Erro UNIQUE constriant (PK ou UNIQUE)
 						{
 							contexto.Result = ResultadoErroJson("valorduplicado", "Um ou mais valores já existem na base de dados e não podem ser duplicados", 400);
-							contexto.ExceptionHandled = true;
+							contexto.ExceptionHandled = false;
 							break;
 						}
 					}
@@ -63,6 +62,7 @@ public class FLTExcecao : IExceptionFilter
 
 		if (!contexto.ExceptionHandled)
 		{
+			// TODO: LOG ERROS
 			contexto.Result = ResultadoErroJson("errointerno", "Ocorreu um erro interno no servidor", 500);
 			contexto.ExceptionHandled = true;
 		}
