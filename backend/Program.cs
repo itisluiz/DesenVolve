@@ -25,8 +25,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 		ValidateAudience = false,
 		ValidateLifetime = true,
 		ValidateIssuerSigningKey = true,
-		ValidIssuer = AppSettings.Valor<string>("JWT:Issuer"),
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.Valor<string>("JWT:Secret")))
+		ValidIssuer = SettingsHelper.Valor<string>("JWT:Issuer"),
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SettingsHelper.Valor<string>("JWT:Secret")))
 	};
 
 	options.Events = new JwtBearerEvents

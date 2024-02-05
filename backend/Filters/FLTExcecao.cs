@@ -23,7 +23,6 @@ public class FLTExcecao : IExceptionFilter
 
 	public void OnException(ExceptionContext contexto)
 	{
-		// TODO: LOG ERROS
 		Exception excecao = contexto.Exception;
 
 		switch (excecao)
@@ -64,8 +63,8 @@ public class FLTExcecao : IExceptionFilter
 
 		if (!contexto.ExceptionHandled)
 		{
-			int codigoErro = Logger.LogarExcecao(contexto.Exception);
-			contexto.Result = ResultadoErroJson("errointerno", $"Ocorreu um erro interno no servidor (Código de referência: {codigoErro})", 500);
+			LogHelper.LogExcecao(excecao);
+			contexto.Result = ResultadoErroJson("errointerno", "Ocorreu um erro interno no servidor", 500);
 			contexto.ExceptionHandled = true;
 		}
 	}

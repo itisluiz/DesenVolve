@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class CTXDesenvolve : DbContext
 {
-	public DbSet<MLogExcecao> LogsExcecao { get; set; } = null!;
+	public DbSet<MLog> Logs { get; set; } = null!;
 	public DbSet<MUsuario> Usuarios { get; set; } = null!;
 	public DbSet<MEquipe> Equipes { get; set; } = null!;
 	public DbSet<MUsuarioEquipe> UsuarioEquipes { get; set; } = null!;
@@ -18,8 +18,8 @@ public class CTXDesenvolve : DbContext
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		string server = AppSettings.Valor<string>("DBConnection:Server");
-		string database = AppSettings.Valor<string>("DBConnection:Database");
+		string server = SettingsHelper.Valor<string>("DBConnection:Server");
+		string database = SettingsHelper.Valor<string>("DBConnection:Database");
 		
 		optionsBuilder.UseSqlServer($"Server={server};Database={database};Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
 

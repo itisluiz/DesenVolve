@@ -9,12 +9,12 @@ public static class TokenHelper
 {
 	public static SecurityTokenDescriptor GerarDescriptorJWT(Claim[] claims, DateTime? expiracao)
 	{
-		SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.Valor<string>("JWT:Secret")));
+		SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SettingsHelper.Valor<string>("JWT:Secret")));
 		return new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(claims),
 			Expires = expiracao ?? DateTime.Now.AddDays(1),
-			Issuer = AppSettings.Valor<string>("JWT:Issuer"),
+			Issuer = SettingsHelper.Valor<string>("JWT:Issuer"),
 			SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature),
 		};
 	}
