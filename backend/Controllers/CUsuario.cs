@@ -1,11 +1,11 @@
-using System.Security.Claims;
+namespace Desenvolve.Controllers;
+
 using Desenvolve.Contexts;
 using Desenvolve.Models;
 using Desenvolve.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-namespace Desenvolve.Controllers;
+using System.Security.Claims;
 
 [Route("api/usuario")]
 public class CUsuario : Controller

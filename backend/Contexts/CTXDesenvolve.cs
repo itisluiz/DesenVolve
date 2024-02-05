@@ -1,11 +1,11 @@
 namespace Desenvolve.Contexts;
 
-using System.ComponentModel.DataAnnotations;
 using Desenvolve.Models;
 using Desenvolve.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 public class CTXDesenvolve : DbContext
 {
