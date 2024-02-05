@@ -34,7 +34,7 @@ public class CUsuario : Controller
 	[Authorize]
 	[HttpPatch]
 	public IActionResult AtualizarUsuario([FromForm] string? nome, 
-		[FromForm] string? sobrenome, [FromForm] string? email, [FromForm] string? senha)
+		[FromForm] string? sobrenome, [FromForm] string? senha)
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
@@ -46,10 +46,7 @@ public class CUsuario : Controller
 
 		if (sobrenome != null)
 			usuario.Sobrenome = sobrenome;
-		
-		if (email != null)
-			usuario.Email = email;
-		
+
 		if (senha != null)
 			usuario.Senha = senha;
 		
