@@ -103,6 +103,28 @@ public class CEquipe : Controller
 		return Ok();
 	}
 
+	[Authorize]
+	[HttpGet("projetos")]
+	public IActionResult ObterProjetosEquipe([FromQuery] int codigoEquipe)
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MEquipe? equipe = ctx.Equipes
+			.Include(equipe => equipe.Projetos)
+			.Include(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+
+		if (equipe == null)
+			throw new ArgumentException("Código de equipe não encontrado");
+
+		Login login = new Login(User);
+
+		if (!equipe.Membros.Any(login.RepresentaUsuario))
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para acessar esta equipe");
+
+		return Ok(equipe.Projetos);
+	}
+
 #region Membros
 	[Authorize]
 	[HttpPost("membro")]

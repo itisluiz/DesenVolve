@@ -112,4 +112,27 @@ public class CProjeto : Controller
 
 		return Ok();
 	}
+
+	[Authorize]
+	[HttpGet("tarefas")]
+	public IActionResult ObterTarefasProjeto([FromQuery] int codigoProjeto)
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MProjeto? projeto = ctx.Projetos
+			.Include(projeto => projeto.Tarefas)
+			.Include(projeto => projeto.Equipe)
+			.ThenInclude(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(projeto => projeto.Codigo == codigoProjeto);
+
+		if (projeto == null)
+			throw new ArgumentException("Código de projeto não encontrado");
+	
+		Login login = new Login(User);
+
+		if (!projeto.Equipe.Membros.Any(login.RepresentaUsuario))
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para acessar este projeto");
+
+		return Ok(projeto.Tarefas);
+	}
 }

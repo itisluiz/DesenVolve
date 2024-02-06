@@ -86,4 +86,26 @@ public class CUsuario : Controller
 		Response.Cookies.Delete("token");
 		return Ok();
 	}
+	
+	[Authorize]
+	[HttpGet("equipes")]
+	public IActionResult ObterEquipes()
+	{
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		Login login = new Login(User);
+		MUsuario usuario = login.ObterUsuario(ctx);
+
+		ctx.Entry(usuario).Collection(usuario => usuario.UsuarioEquipes).Load();
+		
+		return Ok(usuario.UsuarioEquipes.Select(usuarioEquipe => new
+		{
+			usuarioEquipe.Equipe.Codigo,
+			usuarioEquipe.Equipe.Nome,
+			Cargo = new {
+				Codigo = usuarioEquipe.Cargo,
+				Nome = usuarioEquipe.Cargo.ToString()
+			}
+		}));
+	}
 }
