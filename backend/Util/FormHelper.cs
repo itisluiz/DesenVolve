@@ -12,4 +12,9 @@ public static class FormHelper
 				throw new ArgumentException("Um ou mais campos requeridos não foram fornecidos");
 		}
 	}
+
+	public static string Capitalizar(string texto)
+	{
+		return char.ToUpper(texto[0]) + texto[1..].ToLower();
+	}
 }

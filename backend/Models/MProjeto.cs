@@ -13,6 +13,7 @@ public class MProjeto : IValidatableObject
 	[MaxLength(64)]
 	public string Nome {get; set;}
 
+	[JsonIgnore]
 	public MEquipe Equipe {get; set;}
 
 	[JsonIgnore]

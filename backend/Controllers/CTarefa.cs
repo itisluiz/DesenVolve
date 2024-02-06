@@ -43,16 +43,17 @@ public class CTarefa : Controller
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		MProjeto? projeto = ctx.Projetos.Include(projeto => projeto.Equipe)
+		MProjeto? projeto = ctx.Projetos
+			.Include(projeto => projeto.Equipe)
 			.ThenInclude(equipe => equipe.UsuarioEquipes)
 			.FirstOrDefault(projeto => projeto.Codigo == codigoProjeto);
+
 		if (projeto == null)
 			throw new ArgumentException("Código de projeto não encontrado");
 		
-		if (!projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para cadastrar uma nova tarefa");
+		if (!projeto.Equipe.Administradores.Any(login.RepresentaUsuario))
+			throw new UnauthorizedAccessException("Usuário não tem permissão para cadastrar uma tarefa neste projeto");
 
 		MUsuario? responsavel = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoResponsavel);
 		if (responsavel == null)
@@ -69,7 +70,8 @@ public class CTarefa : Controller
 	[Authorize]
 	[HttpPatch]
 	public IActionResult AtualizarTarefa([FromForm] int codigoTarefa, [FromForm] string? nome, [FromForm] string? descricao,
-		[FromForm] MTarefa.NivelComplexidade? complexidade, [FromForm] int? codigoResponsavel, [FromForm] DateTime? prazo)
+		[FromForm] MTarefa.NivelComplexidade? complexidade, [FromForm] int? codigoResponsavel, [FromForm] DateTime? prazo, 
+		[FromForm] DateTime? inicio, [FromForm] DateTime? finalizado)
 	{
 		FormHelper.Requeridos(codigoTarefa);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
@@ -84,10 +86,9 @@ public class CTarefa : Controller
 			throw new ArgumentException("Código de tarefa não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!tarefa.Projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para atualizar esta tarefa");
+		if (!tarefa.Projeto.Equipe.Administradores.Any(login.RepresentaUsuario) && !login.RepresentaUsuario(tarefa.Responsavel))
+			throw new UnauthorizedAccessException("Usuário sem permissão para editar esta tarefa");
 
 		if (nome != null)
 			tarefa.Nome = nome;
@@ -96,7 +97,7 @@ public class CTarefa : Controller
 			tarefa.Descricao = descricao;
 
 		if (complexidade != null)
-			tarefa.Complexidade = (MTarefa.NivelComplexidade)complexidade;
+			tarefa.Complexidade = (MTarefa.NivelComplexidade)complexidade; // Dá erro sem o cast, não sei por que
 
 		if (codigoResponsavel != null)
 		{
@@ -109,7 +110,13 @@ public class CTarefa : Controller
 
 		if (prazo != null)
 			tarefa.Prazo = prazo;
+			
+		if (inicio != null)
+			tarefa.Inicio = inicio;
 
+		if (finalizado != null)
+			tarefa.Finalizado = finalizado;
+			
 		ctx.SaveChanges();
 		return Ok();
 	}
@@ -131,10 +138,9 @@ public class CTarefa : Controller
 			throw new ArgumentException("Código de Tarefa não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!tarefa.Projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para remover esta tarefa");
+		if (!tarefa.Projeto.Equipe.Administradores.Any(login.RepresentaUsuario) && !login.RepresentaUsuario(tarefa.Responsavel))
+			throw new UnauthorizedAccessException("Usuário sem permissão para remover esta tarefa");
 
 		ctx.Tarefas.Remove(tarefa);
 		ctx.SaveChanges();

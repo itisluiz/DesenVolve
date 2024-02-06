@@ -2,6 +2,7 @@ namespace Desenvolve.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 public class MTarefa : IValidatableObject
@@ -26,6 +27,7 @@ public class MTarefa : IValidatableObject
 
 	public NivelComplexidade Complexidade {get; set;}
 
+	[JsonIgnore]
 	public MProjeto Projeto {get; set;}
 
 	public MUsuario Responsavel {get; set;}

@@ -10,25 +10,14 @@ using System.Security.Claims;
 [Route("api/usuario")]
 public class CUsuario : Controller
 {
+	[Authorize]
 	[HttpGet]
-	public IActionResult ObterUsuario([FromQuery] int? codigoUsuario)
+	public IActionResult ObterUsuario()
 	{
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		if (codigoUsuario == null)
-		{
-			if (!Login.Logado(User))
-				throw new ArgumentException("Código de usuário não fornecido e não está logado");
-			
-			Login login = new Login(User);
-			return Ok(login.ObterUsuario(ctx));
-		}
-
-		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoUsuario);		
-		if (usuario == null)
-			throw new ArgumentException("Código de usuário não encontrado");
-
-		return Ok(usuario);
+		Login login = new Login(User);
+		return Ok(login.ObterUsuario(ctx));
 	}
 
 	[HttpPost]

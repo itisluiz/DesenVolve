@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Desenvolve.Util;
 using Microsoft.AspNetCore.Identity;
 
 public class MUsuario : IValidatableObject
@@ -18,6 +19,8 @@ public class MUsuario : IValidatableObject
 	[MinLength(2, ErrorMessage = "O sobrenome deve possuir no mínimo 2 caracteres")]
 	[MaxLength(64)]
 	public string Sobrenome {get; set;}
+
+	public string NomeDisplay { get { return $"{Nome[0]}. {Sobrenome}"; } }
 
 	// Email possuí unique constraint
 	[EmailAddress(ErrorMessage = "O email informado não é válido")]
@@ -54,8 +57,8 @@ public class MUsuario : IValidatableObject
 
 	public MUsuario(string nome, string sobrenome, string email, string senha)
 	{
-		this.Nome = nome;
-		this.Sobrenome = sobrenome;
+		this.Nome = FormHelper.Capitalizar(nome);
+		this.Sobrenome = FormHelper.Capitalizar(sobrenome);
 		this.Email = email;
 		this.SenhaHash = HashSenha(senha);
 		this.UsuarioEquipes = new HashSet<MUsuarioEquipe>();

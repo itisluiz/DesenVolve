@@ -41,14 +41,13 @@ public class CProjeto : Controller
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
-
+		
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
 
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		if (!equipe.Administradores.Contains(usuario))
+		if (!equipe.Administradores.Any(login.RepresentaUsuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para cadastrar um novo projeto");
 
 		MProjeto novoProjeto = new MProjeto(nome, equipe);
@@ -74,9 +73,8 @@ public class CProjeto : Controller
 			throw new ArgumentException("Código de projeto não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!projeto.Equipe.Administradores.Contains(usuario))
+		if (!projeto.Equipe.Administradores.Any(login.RepresentaUsuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para atualizar este projeto");
 
 		if (nome != null)
@@ -102,9 +100,8 @@ public class CProjeto : Controller
 			throw new ArgumentException("Código de projeto não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!projeto.Equipe.Administradores.Contains(usuario))
+		if (!projeto.Equipe.Administradores.Any(login.RepresentaUsuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para remover este projeto");
 
 		// remove tarefas associados ao projeto que deseja remover

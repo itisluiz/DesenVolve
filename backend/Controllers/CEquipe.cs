@@ -64,9 +64,8 @@ public class CEquipe : Controller
 			throw new ArgumentException("Código de equipe não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!equipe.Administradores.Contains(usuario))
+		if (!equipe.Administradores.Any(login.RepresentaUsuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para atualizar esta equipe");
 
 		if (nome != null)
@@ -91,10 +90,9 @@ public class CEquipe : Controller
 			throw new ArgumentException("Código de equipe não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
-		if (!equipe.Administradores.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para remover esta equipe");
+		if (!login.RepresentaUsuario(equipe.Lider))
+			throw new UnauthorizedAccessException("Somente o líder pode remover a equipe");
 
 		// remove projetos associados a equipe que deseja remover --> remove as tarefas do projeto também
 		ctx.Projetos.RemoveRange(equipe.Projetos);
@@ -108,9 +106,9 @@ public class CEquipe : Controller
 #region Membros
 	[Authorize]
 	[HttpPost("membro")]
-	public IActionResult AdicionarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] MUsuarioEquipe.TipoCargo cargo)
+	public IActionResult AdicionarMembroEquipe([FromForm] int codigoEquipe, [FromForm] string emailUsuario, [FromForm] MUsuarioEquipe.TipoCargo cargo)
 	{
-		FormHelper.Requeridos(codigoEquipe, codigoUsuario, cargo);
+		FormHelper.Requeridos(codigoEquipe, emailUsuario, cargo);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -118,15 +116,14 @@ public class CEquipe : Controller
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
-		MUsuario? usuario = ctx.Usuarios.Find(codigoUsuario);
+		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Email == emailUsuario);
 
 		if (usuario == null)
-			throw new ArgumentException("Código de usuário não encontrado");
+			throw new ArgumentException("E-mail de usuário não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuarioLogado = login.ObterUsuario(ctx);
 
-		if (!equipe.Administradores.Contains(usuarioLogado))
+		if (!equipe.Administradores.Any(login.RepresentaUsuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para adicionar membros a esta equipe");
 
 		equipe.AdicionarMembro(usuario, cargo);
@@ -152,10 +149,9 @@ public class CEquipe : Controller
 			throw new ArgumentException("Código de usuário não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuarioLogado = login.ObterUsuario(ctx);
 
 		// Permite que o usuário remova a si mesmo
-		if (!equipe.Administradores.Contains(usuarioLogado) && usuarioLogado != usuario)
+		if (!equipe.Administradores.Any(login.RepresentaUsuario) && !login.RepresentaUsuario(usuario))
 			throw new UnauthorizedAccessException("Usuário sem permissão para remover membros desta equipe");
 
 		equipe.RemoverMembro(usuario);
@@ -170,7 +166,9 @@ public class CEquipe : Controller
 		FormHelper.Requeridos(codigoEquipe, codigoUsuario, cargo);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+		MEquipe? equipe = ctx.Equipes
+			.Include(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
 
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
@@ -181,9 +179,8 @@ public class CEquipe : Controller
 			throw new ArgumentException("Código de usuário não encontrado");
 
 		Login login = new Login(User);
-		MUsuario usuarioLogado = login.ObterUsuario(ctx);
 
-		if (equipe.Lider != usuarioLogado)
+		if (!login.RepresentaUsuario(equipe.Lider))
 			throw new UnauthorizedAccessException("Somente o líder pode alterar cargos de membros desta equipe");
 
 		equipe.AlterarCargo(usuario, cargo);

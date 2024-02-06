@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-// TODO: Resposta json pertinente com os cargos junto dos membros (JsonObject?)
-
 public class MEquipe : IValidatableObject
 {
 	[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -41,6 +39,24 @@ public class MEquipe : IValidatableObject
 	public MUsuario Lider
 	{
 		get { return UsuarioEquipes.First(usuarioEquipe => usuarioEquipe.Cargo == MUsuarioEquipe.TipoCargo.Lider).Usuario; }
+	}
+
+	// Para retorno na API
+	[NotMapped]
+	public IEnumerable<object> MembrosEquipe
+	{
+		get
+		{
+			return UsuarioEquipes.Select(usuarioEquipe => new
+			{
+				usuarioEquipe.Usuario,
+				Cargo = new
+				{
+					Codigo = usuarioEquipe.Cargo,
+					Nome = usuarioEquipe.Cargo.ToString()
+				}
+			});
+		}
 	}
 
 	[JsonIgnore]
