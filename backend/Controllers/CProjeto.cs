@@ -26,10 +26,9 @@ public class CProjeto : Controller
 			throw new ArgumentException("Código de projeto não encontrado");
 	
 		Login login = new Login(User);
-		MUsuario usuario = login.ObterUsuario(ctx);
 
 		if (!projeto.Equipe.Membros.Any(login.RepresentaUsuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para acessar esta tarefa");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para acessar este projeto");
 
 		return Ok(projeto);
 	}
@@ -50,7 +49,7 @@ public class CProjeto : Controller
 			throw new ArgumentException("Código de equipe não encontrado");
 
 		if (!equipe.Administradores.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário não é lider ou administrador da equipe e não pode cadastrar um novo projeto");
+			throw new UnauthorizedAccessException("Usuário sem permissão para cadastrar um novo projeto");
 
 		MProjeto novoProjeto = new MProjeto(nome, equipe);
 		equipe.Projetos.Add(novoProjeto);
@@ -78,7 +77,7 @@ public class CProjeto : Controller
 		MUsuario usuario = login.ObterUsuario(ctx);
 
 		if (!projeto.Equipe.Administradores.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário não é lider ou administrador da equipe e não pode atualizar este projeto");
+			throw new UnauthorizedAccessException("Usuário sem permissão para atualizar este projeto");
 
 		if (nome != null)
 			projeto.Nome = nome;
@@ -93,6 +92,26 @@ public class CProjeto : Controller
 	{
 		FormHelper.Requeridos(codigoProjeto);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MProjeto? projeto = ctx.Projetos
+			.Include(projeto => projeto.Equipe)
+			.ThenInclude(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(projeto => projeto.Codigo == codigoProjeto);
+
+		if (projeto == null)
+			throw new ArgumentException("Código de projeto não encontrado");
+
+		Login login = new Login(User);
+		MUsuario usuario = login.ObterUsuario(ctx);
+
+		if (!projeto.Equipe.Administradores.Contains(usuario))
+			throw new UnauthorizedAccessException("Usuário sem permissão para remover este projeto");
+
+		// remove tarefas associados ao projeto que deseja remover
+		ctx.Tarefas.RemoveRange(projeto.Tarefas);
+
+		ctx.Projetos.Remove(projeto);
+		ctx.SaveChanges();
 
 		return Ok();
 	}

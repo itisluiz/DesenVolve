@@ -17,14 +17,17 @@ public class CEquipe : Controller
 		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+		MEquipe? equipe = ctx.Equipes
+			.Include(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
 
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
 
 		Login login = new Login(User);
+
 		if (!equipe.Membros.Any(login.RepresentaUsuario))
-			throw new UnauthorizedAccessException("Usuário não é um membro desta equipe");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para acessar esta equipe");
 
 		return Ok(equipe);
 	}
@@ -53,7 +56,9 @@ public class CEquipe : Controller
 		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+		MEquipe? equipe = ctx.Equipes
+			.Include(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
 
 		if (equipe == null)
 			throw new ArgumentException("Código de equipe não encontrado");
@@ -71,7 +76,6 @@ public class CEquipe : Controller
 		return Ok();
 	}
 
-	// Aguardar CProjeto e CEquipe para concluir esse método
 	[Authorize]
 	[HttpDelete]
 	public IActionResult DeletarEquipe([FromForm] int codigoEquipe)
@@ -79,7 +83,26 @@ public class CEquipe : Controller
 		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
-		throw new NotImplementedException();
+		MEquipe? equipe = ctx.Equipes
+			.Include(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
+
+		if (equipe == null)
+			throw new ArgumentException("Código de equipe não encontrado");
+
+		Login login = new Login(User);
+		MUsuario usuario = login.ObterUsuario(ctx);
+
+		if (!equipe.Administradores.Contains(usuario))
+			throw new UnauthorizedAccessException("Usuário sem permissão para remover esta equipe");
+
+		// remove projetos associados a equipe que deseja remover --> remove as tarefas do projeto também
+		ctx.Projetos.RemoveRange(equipe.Projetos);
+
+		ctx.Equipes.Remove(equipe);
+		ctx.SaveChanges();
+
+		return Ok();
 	}
 
 #region Membros

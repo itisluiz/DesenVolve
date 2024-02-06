@@ -29,7 +29,7 @@ public class CTarefa : Controller
 		Login login = new Login(User);
 
 		if (!tarefa.Projeto.Equipe.Membros.Any(login.RepresentaUsuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para acessar esta tarefa");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para acessar esta tarefa");
 
 		return Ok(tarefa);
 	}
@@ -52,7 +52,7 @@ public class CTarefa : Controller
 			throw new ArgumentException("Código de projeto não encontrado");
 		
 		if (!projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para cadastrar uma tarefa neste projeto");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para cadastrar uma nova tarefa");
 
 		MUsuario? responsavel = ctx.Usuarios.FirstOrDefault(usuario => usuario.Codigo == codigoResponsavel);
 		if (responsavel == null)
@@ -87,7 +87,7 @@ public class CTarefa : Controller
 		MUsuario usuario = login.ObterUsuario(ctx);
 
 		if (!tarefa.Projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para atualizar esta tarefa");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para atualizar esta tarefa");
 
 		if (nome != null)
 			tarefa.Nome = nome;
@@ -134,7 +134,7 @@ public class CTarefa : Controller
 		MUsuario usuario = login.ObterUsuario(ctx);
 
 		if (!tarefa.Projeto.Equipe.Membros.Contains(usuario))
-			throw new UnauthorizedAccessException("Usuário sem permissão para remover esta tarefa");
+			throw new UnauthorizedAccessException("Usuário não é membro da equipe e não tem permissão para remover esta tarefa");
 
 		ctx.Tarefas.Remove(tarefa);
 		ctx.SaveChanges();
