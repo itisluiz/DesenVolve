@@ -39,6 +39,7 @@ public class CTarefa : Controller
 	public IActionResult CadastrarTarefa([FromForm] int codigoProjeto, [FromForm] string nome, [FromForm] string descricao,
 		[FromForm] MTarefa.NivelComplexidade complexidade, [FromForm] int codigoResponsavel, [FromForm] DateTime? prazo)
 	{
+		FormHelper.Requeridos(codigoProjeto, nome, descricao, complexidade, codigoResponsavel);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
@@ -70,6 +71,7 @@ public class CTarefa : Controller
 	public IActionResult AtualizarTarefa([FromForm] int codigoTarefa, [FromForm] string? nome, [FromForm] string? descricao,
 		[FromForm] MTarefa.NivelComplexidade? complexidade, [FromForm] int? codigoResponsavel, [FromForm] DateTime? prazo)
 	{
+		FormHelper.Requeridos(codigoTarefa);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MTarefa? tarefa = ctx.Tarefas
@@ -116,6 +118,7 @@ public class CTarefa : Controller
 	[HttpDelete]
 	public IActionResult DeletarTarefa([FromForm] int codigoTarefa)
 	{
+		FormHelper.Requeridos(codigoTarefa);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MTarefa? tarefa = ctx.Tarefas
