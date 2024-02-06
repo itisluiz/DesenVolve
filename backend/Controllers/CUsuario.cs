@@ -35,7 +35,9 @@ public class CUsuario : Controller
 	public IActionResult CadastrarUsuario([FromForm] string nome, [FromForm] string sobrenome, 
 		[FromForm] string email, [FromForm] string senha)
 	{
+		FormHelper.Requeridos(nome, sobrenome, email, senha);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
+		
 		ctx.Usuarios.Add(new MUsuario(nome, sobrenome, email, senha));
 		ctx.SaveChanges();
 
@@ -68,6 +70,7 @@ public class CUsuario : Controller
 	[HttpPost("/api/login")]
 	public IActionResult LoginUsuario([FromForm] string email, [FromForm] string senha)
 	{
+		FormHelper.Requeridos(email, senha);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MUsuario? usuario = ctx.Usuarios.FirstOrDefault(usuario => usuario.Email == email);

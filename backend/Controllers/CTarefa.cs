@@ -14,6 +14,7 @@ public class CTarefa : Controller
 	[HttpGet]
 	public IActionResult ObterTarefa([FromQuery] int codigoTarefa)
 	{
+		FormHelper.Requeridos(codigoTarefa);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MTarefa? tarefa = ctx.Tarefas
@@ -38,6 +39,8 @@ public class CTarefa : Controller
 	public IActionResult CadastrarTarefa([FromForm] int codigoProjeto, [FromForm] string nome, [FromForm] string descricao,
 		[FromForm] MTarefa.NivelComplexidade complexidade, [FromForm] int codigoResponsavel, [FromForm] DateTime? prazo)
 	{
+		FormHelper.Requeridos(codigoProjeto, nome, descricao, complexidade, codigoResponsavel);
+
 		throw new NotImplementedException();
 	}
 }
