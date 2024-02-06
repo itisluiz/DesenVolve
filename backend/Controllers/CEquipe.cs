@@ -14,6 +14,7 @@ public class CEquipe : Controller
 	[HttpGet]
 	public IActionResult ObterEquipe([FromQuery] int codigoEquipe)
 	{
+		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -32,6 +33,7 @@ public class CEquipe : Controller
 	[HttpPost]
 	public IActionResult CadastrarEquipe([FromForm] string nome)
 	{
+		FormHelper.Requeridos(nome);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
@@ -48,6 +50,7 @@ public class CEquipe : Controller
 	[HttpPatch]
 	public IActionResult AtualizarEquipe([FromForm] int codigoEquipe, [FromForm] string? nome)
 	{
+		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -73,15 +76,18 @@ public class CEquipe : Controller
 	[HttpDelete]
 	public IActionResult DeletarEquipe([FromForm] int codigoEquipe)
 	{
+		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
+
 		throw new NotImplementedException();
 	}
 
 #region Membros
 	[Authorize]
 	[HttpPost("membro")]
-	public IActionResult AdicionarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] int codigoCargo)
+	public IActionResult AdicionarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] MUsuarioEquipe.TipoCargo cargo)
 	{
+		FormHelper.Requeridos(codigoEquipe, codigoUsuario, cargo);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -100,7 +106,7 @@ public class CEquipe : Controller
 		if (!equipe.Administradores.Contains(usuarioLogado))
 			throw new UnauthorizedAccessException("Usuário sem permissão para adicionar membros a esta equipe");
 
-		equipe.AdicionarMembro(usuario, (MUsuarioEquipe.TipoCargo)codigoCargo);
+		equipe.AdicionarMembro(usuario, cargo);
 		ctx.SaveChanges();
 		return Ok();
 	}
@@ -109,6 +115,7 @@ public class CEquipe : Controller
 	[HttpDelete("membro")]
 	public IActionResult RemoverMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario)
 	{
+		FormHelper.Requeridos(codigoEquipe, codigoUsuario);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -135,8 +142,9 @@ public class CEquipe : Controller
 		
 	[Authorize]
 	[HttpPatch("membro")]
-	public IActionResult AtualizarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] int codigoCargo)
+	public IActionResult AtualizarMembroEquipe([FromForm] int codigoEquipe, [FromForm] int codigoUsuario, [FromForm] MUsuarioEquipe.TipoCargo cargo)
 	{
+		FormHelper.Requeridos(codigoEquipe, codigoUsuario, cargo);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes.Include(equipe => equipe.UsuarioEquipes).FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
@@ -155,7 +163,7 @@ public class CEquipe : Controller
 		if (equipe.Lider != usuarioLogado)
 			throw new UnauthorizedAccessException("Somente o líder pode alterar cargos de membros desta equipe");
 
-		equipe.AlterarCargo(usuario, (MUsuarioEquipe.TipoCargo)codigoCargo);
+		equipe.AlterarCargo(usuario, cargo);
 		ctx.SaveChanges();
 		return Ok();
 	}

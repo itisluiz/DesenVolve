@@ -14,6 +14,7 @@ public class CProjeto : Controller
 	[HttpGet]
 	public IActionResult ObterProjeto([FromQuery] int codigoProjeto)
 	{
+		FormHelper.Requeridos(codigoProjeto);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MProjeto? projeto = ctx.Projetos
@@ -37,6 +38,7 @@ public class CProjeto : Controller
 	[HttpPost]
 	public IActionResult CadastrarProjeto([FromForm] int codigoEquipe, [FromForm] string nome)
 	{
+		FormHelper.Requeridos(codigoEquipe, nome);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
@@ -61,6 +63,7 @@ public class CProjeto : Controller
 	[HttpPatch]
 	public IActionResult AtualizarProjeto([FromForm] int codigoProjeto, [FromForm] string? nome)
 	{
+		FormHelper.Requeridos(codigoProjeto);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MProjeto? projeto = ctx.Projetos
@@ -88,6 +91,7 @@ public class CProjeto : Controller
 	[HttpDelete]
 	public IActionResult DeletarProjeto([FromForm] int codigoProjeto)
 	{
+		FormHelper.Requeridos(codigoProjeto);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		return Ok();

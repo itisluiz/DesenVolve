@@ -45,6 +45,13 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+
+	app.UseCors(builder => builder
+		.WithOrigins(SettingsHelper.Valor<string>("CORS:AllowedHosts").Split(','))
+		.AllowAnyMethod()
+		.AllowAnyHeader()
+		.AllowCredentials()
+	);
 }
 
 app.UseHttpsRedirection();

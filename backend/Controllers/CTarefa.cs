@@ -14,6 +14,7 @@ public class CTarefa : Controller
 	[HttpGet]
 	public IActionResult ObterTarefa([FromQuery] int codigoTarefa)
 	{
+		FormHelper.Requeridos(codigoTarefa);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MTarefa? tarefa = ctx.Tarefas
