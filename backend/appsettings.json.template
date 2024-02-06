@@ -13,5 +13,8 @@
     "Secret": "[CHAVE JWT]",
     "Issuer": "DesenVolve"
   },
+  "CORS": {
+    "AllowedHosts": "http://localhost:5001"
+  }
   "AllowedHosts": "*"
 }
