@@ -2,6 +2,7 @@ namespace Desenvolve.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class MProjeto : IValidatableObject
 {
@@ -14,6 +15,7 @@ public class MProjeto : IValidatableObject
 
 	public MEquipe Equipe {get; set;}
 
+	[JsonIgnore]
 	public ISet<MTarefa> Tarefas {get; set;}
 
 	// O início do projeto é a data de início da tarefa mais antiga
