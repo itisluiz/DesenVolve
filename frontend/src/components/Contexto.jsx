@@ -1,6 +1,6 @@
 import { ProviderUsuario } from "../contexts/ContextoUsuario";
 
-const Contexo = (props) => {
+const Contexto = (props) => {
 	return (
 		<ProviderUsuario>
 			{props.children}
@@ -8,5 +8,5 @@ const Contexo = (props) => {
 	);
 };
 
-export default Contexo;
+export default Contexto;
  

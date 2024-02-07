@@ -1,4 +1,6 @@
-async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
+import { executarAcao } from "./autonomia";
+
+async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null, autonomia = true)
 {
 	rota = import.meta.env.VITE_URL_API + `${rota}${argsQuery ? `?${new URLSearchParams(argsQuery)}` : '/' }`;
 	verbo = verbo.trim().toUpperCase();
@@ -20,6 +22,10 @@ async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
 	})
 
 	let json = await res.json().catch(() => null);
+
+	if (autonomia)
+		executarAcao(res, json);
+
 	return {
 		ok: res.ok,
 		status: res.status,
@@ -27,4 +33,15 @@ async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
 	};
 }
 
-export { chamarAPI };
+async function postAPI(rota, argsQuery = null, argsForm = null, autonomia = true)
+{
+	return chamarAPI(rota, 'POST', null, argsForm, autonomia);
+}
+
+
+async function getAPI(rota, argsQuery = null, autonomia = true)
+{
+	return chamarAPI(rota, 'GET', null, null, autonomia);
+}
+
+export { postAPI, getAPI };

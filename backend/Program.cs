@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 
 	app.UseCors(builder => builder
-		.WithOrigins(SettingsHelper.Valor<string>("CORS:AllowedHosts").Split(','))
+		.WithOrigins("http://26.207.52.112:5001")
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials()
