@@ -91,6 +91,7 @@ public class CUsuario : Controller
 	[HttpGet("equipes")]
 	public IActionResult ObterEquipes()
 	{
+		FormHelper.Requeridos();
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		Login login = new Login(User);
