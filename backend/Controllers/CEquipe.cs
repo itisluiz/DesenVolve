@@ -107,6 +107,7 @@ public class CEquipe : Controller
 	[HttpGet("projetos")]
 	public IActionResult ObterProjetosEquipe([FromQuery] int codigoEquipe)
 	{
+		FormHelper.Requeridos(codigoEquipe);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes

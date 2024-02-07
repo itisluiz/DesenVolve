@@ -117,6 +117,7 @@ public class CProjeto : Controller
 	[HttpGet("tarefas")]
 	public IActionResult ObterTarefasProjeto([FromQuery] int codigoProjeto)
 	{
+		FormHelper.Requeridos(codigoProjeto);
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MProjeto? projeto = ctx.Projetos
