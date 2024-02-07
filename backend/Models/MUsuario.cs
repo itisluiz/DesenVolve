@@ -3,6 +3,8 @@ namespace Desenvolve.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Serialization;
 using Desenvolve.Util;
 using Microsoft.AspNetCore.Identity;
@@ -45,6 +47,16 @@ public class MUsuario : IValidatableObject
 	[NotMapped]
 	[JsonIgnore]
 	public IEnumerable<MEquipe> Equipes { get { return UsuarioEquipes.Select(usuarioEquipe => usuarioEquipe.Equipe); } }
+
+	[NotMapped]
+	public string UrlAvatar
+	{
+		get
+		{
+			byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(this.Email.Trim().ToLower()));
+			return "https://gravatar.com/avatar/" + BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+		}
+	}
 
 	public MUsuario()
 	{

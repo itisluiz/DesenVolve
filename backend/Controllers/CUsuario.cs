@@ -77,7 +77,7 @@ public class CUsuario : Controller
 
 		string token = TokenHelper.GerarJWT(claims, DateTime.Now.AddDays(7));
 		Response.Cookies.Append("token", token);
-		return Ok();
+		return Ok(usuario);
 	}
 
 	[HttpPost("/api/logout")]
