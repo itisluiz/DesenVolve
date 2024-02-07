@@ -1,3 +1,11 @@
+import { enqueueSnackbar } from "notistack";
+
+function mostrarErro(res, json)
+{
+	if (!res.ok && json?.detalhes)
+		enqueueSnackbar(json.detalhes, { variant: 'error' });
+}
+
 async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
 {
 	rota = import.meta.env.VITE_URL_API + `${rota}${argsQuery ? `?${new URLSearchParams(argsQuery)}` : '/' }`;
@@ -20,6 +28,9 @@ async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
 	})
 
 	let json = await res.json().catch(() => null);
+	
+	mostrarErro(res, json);
+
 	return {
 		ok: res.ok,
 		status: res.status,
