@@ -82,7 +82,10 @@ const PaginaTarefas = (props) => {
 			<Stack width="100%" gap="1em">
 
 				<div style={{display: 'flex', justifyContent: 'space-between'}}>
-					<Typography variant="h3" color="primary"><b>Projeto</b> {projeto?.nome}</Typography>
+					<span style={{display: 'flex'}}>
+						<Fab onClick={() => navigate(`/equipe/${equipe.codigo}`)} variant="contained" sx={{mr: '2em'}}><Icon>arrow_left</Icon></Fab>
+						<Typography variant="h3" color="primary"><b>Projeto</b> {projeto?.nome}</Typography>
+					</span>	
 					<span>
 						<Fab onClick={atualizarDadosProjeto} variant="contained" color="primary" sx={{m: '0 1em'}}><Icon>refresh</Icon></Fab>
 						<Fab onClick={() => setCriarTarefaAberto(true)} variant="contained" color="primary"><Icon>add</Icon></Fab>

@@ -128,11 +128,14 @@ const PaginaProjetos = (props) => {
 			
 			<Stack width="100%" gap="1em">
 				<div style={{display: 'flex', justifyContent: 'space-between'}}>
-					<Typography variant="h3" color="primary"><b>Equipe</b> {equipe?.nome}</Typography>
+					<span style={{display: 'flex'}}>
+						<Fab onClick={() => navigate('/')} variant="contained" sx={{mr: '2em', zIndex: 0}}><Icon>arrow_left</Icon></Fab>
+						<Typography variant="h3" color="primary"><b>Equipe</b> {equipe?.nome}</Typography>
+					</span>
 					<span>
-						<Fab onClick={() => setSairEquipeAberto(true)} variant="contained" color="error" sx={{m: '0 0.5em'}}><Icon>logout</Icon></Fab>
-						<Fab onClick={atualizarProjetosEquipe} variant="contained" color="primary" sx={{m: '0 0.5em'}}><Icon>refresh</Icon></Fab>
-						<Fab onClick={() => setCriarProjetoAberto(true)} variant="contained" color="primary" sx={{ml: '0.5em'}}><Icon>add</Icon></Fab>
+						<Fab onClick={() => setSairEquipeAberto(true)} variant="contained" color="error" sx={{m: '0 0.5em', zIndex: 0}}><Icon>logout</Icon></Fab>
+						<Fab onClick={atualizarProjetosEquipe} variant="contained" color="primary" sx={{m: '0 0.5em', zIndex: 0}}><Icon>refresh</Icon></Fab>
+						<Fab onClick={() => setCriarProjetoAberto(true)} variant="contained" color="primary" sx={{ml: '0.5em', zIndex: 0}}><Icon>add</Icon></Fab>
 					</span>
 				</div>
 				<Paper sx={{height: '35em', width: '100%', overflow: 'scroll'}}>

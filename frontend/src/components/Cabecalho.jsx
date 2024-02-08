@@ -23,6 +23,10 @@ const Cabecalho = () => {
 						<Avatar src={usuario.urlAvatar} sx={{ cursor: 'pointer' }} />
 					</div>
 					<Menu anchorEl={ancoraMenuUsuario} open={Boolean(ancoraMenuUsuario)} onClose={() => setAncoraMenuUsuario(null)}>
+						<MenuItem onClick={() => { window.location.replace('/') } }>
+							<ListItemIcon><Icon>group</Icon></ListItemIcon>
+							<ListItemText>Minhas equipes</ListItemText>
+						</MenuItem>
 						<MenuItem onClick={() => { submitLogout(); setAncoraMenuUsuario(null); } }>
 							<ListItemIcon><Icon>logout</Icon></ListItemIcon>
 							<ListItemText>Sair</ListItemText>
