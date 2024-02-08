@@ -27,11 +27,13 @@ public class AssistenteIA
 
 	public AssistenteIA(string? sistema = null)
 	{
+		string nomeAssistente = Random.Shared.Next(2) == 0 ? "Gustav" : "Assar";
+
 		requisicao = new ChatCompletionCreateRequest
 		{
 			Messages = new List<ChatMessage>
 			{
-				ChatMessage.FromSystem("Você é o assistente da plataforma DesenVolve, uma plataforma de gestão e acompanhamento de projeto e tarefas.")
+				ChatMessage.FromSystem($"Você é o assistente da plataforma DesenVolve, {nomeAssistente}, uma plataforma de gestão e acompanhamento de projeto e tarefas.")
 			}
 		};
 

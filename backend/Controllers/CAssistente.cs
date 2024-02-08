@@ -57,7 +57,7 @@ public class CAssistente : Controller
 		assistente.AdicionarInstrucao($"Você vai conversar com {usuario.Nome} sobre o projeto {projeto.Nome}.");
 		assistente.AdicionarInstrucao($"Considere que a data e hora atuais são {DateTime.Now}.");
 		assistente.AdicionarInstrucao($"O projeto {projeto.Nome} consiste das seguintas tarefas, que aqui estão listadas em formato JSON: {JsonSerializer.Serialize(projeto.Tarefas)}.");
-		assistente.AdicionarInstrucao($"Se uma data for nula então quer dizer que ainda não ocorreu: Por exemplo, se a data de início for nula então a tarefa ainda não foi iniciada e assim por diante");
+		assistente.AdicionarInstrucao($"Se uma data for nula então quer dizer que ainda não ocorreu: Por exemplo, se a data de início for nula então a tarefa ainda não foi iniciada e assim por diante.");
 		assistente.AdicionarInstrucao($"Comece brevemente falando quem é você e perguntando como pode ajudar. Não entre em detalhes sobre as tarefas do projeto imediatamente, apenas tenha-as em mente pois elas podem entrar em pauta.");
 
 		string novaChave;
