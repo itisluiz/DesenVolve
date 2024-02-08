@@ -17,6 +17,8 @@ const CardTarefa = (props) => {
 		corComplexidade = '#FFA500';
 	else if (props.tarefa.complexidade == 3)
 		corComplexidade = '#FF0000';
+	else
+		corComplexidade = '#AAAAAA';
 
 	function temPermissaoSobre()
 	{

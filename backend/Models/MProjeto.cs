@@ -60,6 +60,12 @@ public class MProjeto : IValidatableObject
 		}
 	}
 
+	[NotMapped]
+	public int QntTarefas { get => this.Tarefas.Count(); }
+
+	[NotMapped]
+	public int QntTarefasFinalizadas { get => this.Tarefas.Where(tarefa => tarefa.Finalizado != null).Count(); }
+
 	public MProjeto()
 	{
 		this.Nome = "";
