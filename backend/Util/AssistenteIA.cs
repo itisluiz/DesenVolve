@@ -27,7 +27,7 @@ public class AssistenteIA
 
 	public AssistenteIA(string? sistema = null)
 	{
-		string nomeAssistente = Random.Shared.Next(2) == 0 ? "Gustav" : "Assar";
+		string nomeAssistente = Random.Shared.Next(2) == 0 ? "Gustaf" : "Assar";
 
 		requisicao = new ChatCompletionCreateRequest
 		{

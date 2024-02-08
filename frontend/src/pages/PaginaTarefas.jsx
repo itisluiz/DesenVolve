@@ -26,6 +26,7 @@ import CardTarefa from "../components/Cards/CardTarefa";
 import { apiObterEquipe } from "../api/equipe";
 import { ContexoUsuario } from "../contexts/ContextoUsuario";
 import { func } from "prop-types";
+import ChatAssistente from "../components/ChatAssistente";
 
 const PaginaTarefas = (props) => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const PaginaTarefas = (props) => {
 
   const [criarTarefaAberto, setCriarTarefaAberto] = useState(false);
   const [removerProjetoAberto, setRemoverProjetoAberto] = useState(false);
+  const [chatAberto, setChatAberto] = useState(false);
 
   const [nomeNovaTarefa, setNomeNovaTarefa] = useState("");
   const [descricaoNovaTarefa, setDescricaoNovaTarefa] = useState("");
@@ -59,6 +61,10 @@ const PaginaTarefas = (props) => {
 
   function cancelarRemoverProjeto() {
     setRemoverProjetoAberto(false);
+  }
+
+  function cancelarChat() {
+    setChatAberto(false);
   }
 
   async function atualizarDadosProjeto() {
@@ -138,6 +144,14 @@ const PaginaTarefas = (props) => {
                 <Icon>delete</Icon>
               </Fab>
             )}
+            <Fab
+              onClick={() => setChatAberto(true)}
+              variant="contained"
+              color="primary"
+              sx={{ ml: "0.5em", backgroundColor: "#75A99C", color: "white" }}
+            >
+              <Icon>smart_toy</Icon>
+            </Fab>
             <Fab
               onClick={atualizarDadosProjeto}
               variant="contained"
@@ -275,6 +289,16 @@ const PaginaTarefas = (props) => {
           <Button onClick={submitRemoverProjeto} color="error">
             Excluír
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={chatAberto} onClose={cancelarChat}>
+        <DialogTitle>Assistente DesenVolve</DialogTitle>
+        <DialogContent>
+          <ChatAssistente codigoProjeto={projeto?.codigo} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelarChat}>Fechar</Button>
         </DialogActions>
       </Dialog>
     </Container>
