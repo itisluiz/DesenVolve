@@ -111,8 +111,9 @@ public class CEquipe : Controller
 		using CTXDesenvolve ctx = new CTXDesenvolve();
 
 		MEquipe? equipe = ctx.Equipes
-			.Include(equipe => equipe.Projetos)
 			.Include(equipe => equipe.UsuarioEquipes)
+			.Include(equipe => equipe.Projetos)
+			.ThenInclude(projeto => projeto.Tarefas)
 			.FirstOrDefault(equipe => equipe.Codigo == codigoEquipe);
 
 		if (equipe == null)

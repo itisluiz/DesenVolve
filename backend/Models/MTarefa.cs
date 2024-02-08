@@ -9,10 +9,10 @@ public class MTarefa : IValidatableObject
 {
 	public enum NivelComplexidade
 	{
-		NaoEstabelecido,
-		Simples,
-		Medio,
-		Complexo
+		NaoEstabelecida,
+		Baixa,
+		Media,
+		Alta
 	}
 
 	[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,6 +26,9 @@ public class MTarefa : IValidatableObject
 	public string? Descricao {get; set;}
 
 	public NivelComplexidade Complexidade {get; set;}
+
+	[NotMapped]
+	public string ComplexidadeNome {get => Complexidade.ToString();}
 
 	[JsonIgnore]
 	public MProjeto Projeto {get; set;}

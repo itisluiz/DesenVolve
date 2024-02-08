@@ -13,11 +13,11 @@ const FormLogin = (props) => {
 			<Typography variant="h5" color="primary">Entrar no DesenVolve</Typography>
 			<Typography variant="caption">Entre com sua conta DesenVolve</Typography>
 				
-			<TextField fullWidth label="E-mail" InputProps={{startAdornment: 
+			<TextField fullWidth label="E-mail" placeholder="E-mail" InputProps={{startAdornment: 
 				(<InputAdornment position="start"><Icon>email</Icon></InputAdornment>)}}
 				value={email} onChange={(e) => setEmail(e.target.value)} 
 			/>
-			<TextField fullWidth label="Senha" type="password" InputProps={{startAdornment: 
+			<TextField fullWidth label="Senha" placeholder="Senha" type="password" InputProps={{startAdornment: 
 				(<InputAdornment position="start"><Icon>password</Icon></InputAdornment>)}}
 				value={senha} onChange={(e) => setSenha(e.target.value)}
 			/>

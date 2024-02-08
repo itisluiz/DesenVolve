@@ -1,6 +1,6 @@
 import { chamarAPI } from './api';
 
-async function login(email, senha)
+async function apiLogin(email, senha)
 {	
 	let res = await chamarAPI('login', 'POST', null, {'email': email, 'senha': senha});
 	
@@ -10,7 +10,7 @@ async function login(email, senha)
 	return res.resposta;
 }
 
-async function cadastro(nome, sobrenome, email, senha)
+async function apiCadastro(nome, sobrenome, email, senha)
 {
 	let res = await chamarAPI('usuario', 'POST', null, {'nome': nome, 'sobrenome': sobrenome, 'email': email, 'senha': senha});
 	
@@ -20,13 +20,12 @@ async function cadastro(nome, sobrenome, email, senha)
 	return res.resposta;
 }
 
-async function logout()
+async function apiLogout()
 {
 	await chamarAPI('logout', 'POST');
 }
 
-
-async function logado()
+async function apiLogado()
 {
 	let res = await chamarAPI('usuario', 'GET');
 	
@@ -36,4 +35,14 @@ async function logado()
 	return res.resposta;
 }
 
-export { login, cadastro, logout, logado }
+async function apiEquipes()
+{
+	let res = await chamarAPI('usuario/equipes', 'GET');
+	
+	if (!res.ok || !res.resposta)
+		return null;
+
+	return res.resposta;
+}
+
+export { apiLogin, apiCadastro, apiLogout, apiLogado, apiEquipes }

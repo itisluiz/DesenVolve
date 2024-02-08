@@ -1,13 +1,13 @@
 import { AppBar, Toolbar, Typography, Stack, Icon, Avatar, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import { useContext, useState } from 'react';
 import { ContexoUsuario } from '../contexts/ContextoUsuario';
-import { logout } from '../api/usuario';
+import { apiLogout } from '../api/usuario';
 
 const Cabecalho = () => {
 	const { usuario, setUsuario } = useContext(ContexoUsuario);
 	const [ancoraMenuUsuario, setAncoraMenuUsuario] = useState(null);
 
-	function submitLogout() { logout().then(() => setUsuario(null)); }
+	function submitLogout() { apiLogout().then(() => setUsuario(null)); }
 
 	return (
 		<AppBar position="sticky">

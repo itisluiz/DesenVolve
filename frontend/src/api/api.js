@@ -25,7 +25,7 @@ async function chamarAPI(rota, verbo, argsQuery = null, argsForm = null)
 		body: corpo,
 		mode: import.meta.env.DEV ? 'cors' : 'same-origin',
 		credentials: import.meta.env.DEV ? 'include' : 'same-origin'
-	})
+	});
 
 	let json = await res.json().catch(() => null);
 	

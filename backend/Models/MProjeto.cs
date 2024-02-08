@@ -16,6 +16,9 @@ public class MProjeto : IValidatableObject
 	[JsonIgnore]
 	public MEquipe Equipe {get; set;}
 
+	[NotMapped]
+	public int CodigoEquipe { get => Equipe.Codigo; }
+
 	[JsonIgnore]
 	public ISet<MTarefa> Tarefas {get; set;}
 

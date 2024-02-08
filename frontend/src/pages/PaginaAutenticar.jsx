@@ -1,7 +1,7 @@
 import { Container, Paper, Tabs, Tab } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { ContexoUsuario } from '../contexts/ContextoUsuario';
-import { cadastro, logado, login } from '../api/usuario';
+import { apiLogado, apiCadastro, apiLogin } from '../api/usuario';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormLogin from '../components/FormsAutenticar/FormLogin';
 import FormCadastro from '../components/FormsAutenticar/FormCadastro';
@@ -27,18 +27,18 @@ const PaginaAutenticar = (props) => {
 		navigate(redirecionar);
 	}
 	
-	useEffect(() => { logado().then(usr => contextualizarUsuario(usr)) }, []);
+	useEffect(() => { apiLogado().then(usr => contextualizarUsuario(usr)) }, []);
 	
 	function submitLogin(email, senha)
 	{
 		setCarregando(true);
-		login(email, senha).then(usr => contextualizarUsuario(usr));
+		apiLogin(email, senha).then(usr => contextualizarUsuario(usr));
 	}
 
 	function submitCadastro(nome, sobrenome, email, senha)
 	{
 		setCarregando(true);
-		cadastro(nome, sobrenome, email, senha).then(usr => contextualizarUsuario(usr));
+		apiCadastro(nome, sobrenome, email, senha).then(usr => contextualizarUsuario(usr));
 	}
 
 	return (

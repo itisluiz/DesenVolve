@@ -147,4 +147,67 @@ public class CTarefa : Controller
 
 		return Ok();
 	}
+
+	[Authorize]
+	[HttpPost("iniciar")]
+	public IActionResult IniciarTarefa([FromForm] int codigoTarefa)
+	{
+		FormHelper.Requeridos(codigoTarefa);
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MTarefa? tarefa = ctx.Tarefas
+			.Include(tarefa => tarefa.Projeto)
+			.ThenInclude(projeto => projeto.Equipe)
+			.ThenInclude(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(tarefa => tarefa.Codigo == codigoTarefa);
+
+		if (tarefa == null)
+			throw new ArgumentException("Código de tarefa não encontrado");
+
+		Login login = new Login(User);
+
+		if (!tarefa.Projeto.Equipe.Administradores.Any(login.RepresentaUsuario) && !login.RepresentaUsuario(tarefa.Responsavel))
+			throw new UnauthorizedAccessException("Usuário sem permissão para iniciar esta tarefa");
+
+		if (tarefa.Inicio != null)
+			throw new ArgumentException("Tarefa já iniciada");
+
+		tarefa.Inicio = DateTime.Now;
+
+		ctx.SaveChanges();
+		return Ok();
+	}
+
+	[Authorize]
+	[HttpPost("finalizar")]
+	public IActionResult TerminarTarefa([FromForm] int codigoTarefa)
+	{
+		FormHelper.Requeridos(codigoTarefa);
+		using CTXDesenvolve ctx = new CTXDesenvolve();
+
+		MTarefa? tarefa = ctx.Tarefas
+			.Include(tarefa => tarefa.Projeto)
+			.ThenInclude(projeto => projeto.Equipe)
+			.ThenInclude(equipe => equipe.UsuarioEquipes)
+			.FirstOrDefault(tarefa => tarefa.Codigo == codigoTarefa);
+
+		if (tarefa == null)
+			throw new ArgumentException("Código de tarefa não encontrado");
+
+		Login login = new Login(User);
+
+		if (!tarefa.Projeto.Equipe.Administradores.Any(login.RepresentaUsuario) && !login.RepresentaUsuario(tarefa.Responsavel))
+			throw new UnauthorizedAccessException("Usuário sem permissão para finalizar esta tarefa");
+
+		if (tarefa.Finalizado != null)
+			throw new ArgumentException("Tarefa já finalizada");
+
+		tarefa.Finalizado = DateTime.Now;
+
+		ctx.SaveChanges();
+		return Ok();
+	}
+
+
+	
 }
