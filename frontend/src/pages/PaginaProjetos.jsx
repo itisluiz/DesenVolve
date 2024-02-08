@@ -135,7 +135,9 @@ const PaginaProjetos = (props) => {
 					<span>
 						<Fab onClick={() => setSairEquipeAberto(true)} variant="contained" color="error" sx={{m: '0 0.5em', zIndex: 0}}><Icon>logout</Icon></Fab>
 						<Fab onClick={atualizarProjetosEquipe} variant="contained" color="primary" sx={{m: '0 0.5em', zIndex: 0}}><Icon>refresh</Icon></Fab>
-						<Fab onClick={() => setCriarProjetoAberto(true)} variant="contained" color="primary" sx={{ml: '0.5em', zIndex: 0}}><Icon>add</Icon></Fab>
+						{cargoUsuario && cargoUsuario.codigo >= 1 &&
+							<Fab onClick={() => setCriarProjetoAberto(true)} variant="contained" color="primary" sx={{ml: '0.5em', zIndex: 0}}><Icon>add</Icon></Fab>
+						}
 					</span>
 				</div>
 				<Paper sx={{height: '35em', width: '100%', overflow: 'scroll'}}>

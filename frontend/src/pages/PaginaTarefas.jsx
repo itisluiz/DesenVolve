@@ -88,7 +88,9 @@ const PaginaTarefas = (props) => {
 					</span>	
 					<span>
 						<Fab onClick={atualizarDadosProjeto} variant="contained" color="primary" sx={{m: '0 1em'}}><Icon>refresh</Icon></Fab>
-						<Fab onClick={() => setCriarTarefaAberto(true)} variant="contained" color="primary"><Icon>add</Icon></Fab>
+						{cargoUsuario && cargoUsuario.codigo >= 1 &&
+							<Fab onClick={() => setCriarTarefaAberto(true)} variant="contained" color="primary"><Icon>add</Icon></Fab>
+						}
 					</span>
 				</div>
 				
