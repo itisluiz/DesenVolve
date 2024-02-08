@@ -1,33 +1,42 @@
-import { chamarAPI } from './api';
+import { chamarAPI } from "./api";
 
-async function apiCriarProjeto(codigoEquipe, nome)
-{	
-	let res = await chamarAPI('projeto', 'POST', null, {'codigoEquipe': codigoEquipe, 'nome': nome });
-	
-	if (!res.ok || !res.resposta)
-		return null;
+async function apiCriarProjeto(codigoEquipe, nome) {
+  let res = await chamarAPI("projeto", "POST", null, {
+    codigoEquipe: codigoEquipe,
+    nome: nome,
+  });
 
-	return res.resposta;
+  if (!res.ok || !res.resposta) return null;
+
+  return res.resposta;
 }
 
-async function apiTarefas(codigoProjeto)
-{
-	let res = await chamarAPI('projeto/tarefas', 'GET', {'codigoProjeto': codigoProjeto });
-	
-	if (!res.ok || !res.resposta)
-		return null;
+async function apiTarefas(codigoProjeto) {
+  let res = await chamarAPI("projeto/tarefas", "GET", {
+    codigoProjeto: codigoProjeto,
+  });
 
-	return res.resposta;
+  if (!res.ok || !res.resposta) return null;
+
+  return res.resposta;
 }
 
-async function apiObterProjeto(codigoProjeto)
-{
-	let res = await chamarAPI('projeto', 'GET', {'codigoProjeto': codigoProjeto });
-	
-	if (!res.ok || !res.resposta)
-		return null;
+async function apiObterProjeto(codigoProjeto) {
+  let res = await chamarAPI("projeto", "GET", { codigoProjeto: codigoProjeto });
 
-	return res.resposta;
+  if (!res.ok || !res.resposta) return null;
+
+  return res.resposta;
 }
 
-export { apiCriarProjeto, apiTarefas, apiObterProjeto }
+async function apiRemoverProjeto(codigoProjeto) {
+  let res = await chamarAPI("projeto", "DELETE", null, {
+    codigoProjeto: codigoProjeto,
+  });
+
+  if (!res.ok || !res.resposta) return null;
+
+  return res.resposta;
+}
+
+export { apiCriarProjeto, apiTarefas, apiObterProjeto, apiRemoverProjeto };
